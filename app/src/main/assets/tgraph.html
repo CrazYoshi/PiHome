@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/d3.min.js"></script>
+    <script>
+		window.onload = function()
+		{
+			var margin = { top: 20, right: 20, bottom: 40, left: 40 },
+				width = document.getElementById('tgraphContent').offsetWidth - margin.left - margin.right,
+				height = document.getElementById('tgraphContent').offsetHeight - margin.top - margin.bottom;
+
+			var x = d3.time.scale()
+				.range([0, width]);
+
+			var y = d3.scale.linear()
+				.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.ticks(d3.time.hour, 3)
+				.tickFormat( d3.time.format("%H:%M"))
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left");
+
+			var area = d3.svg.area()
+				.x(function (d) { return x(d.ts); })
+				.y0(height)
+				.y1(function (d) { return y(d.temperature); });
+
+			var svg = d3.select("#tgraph").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			var graphdata = [];
+            var data = android.getData();
+            if(data!=""){
+                var dhtlist = JSON.parse(data);
+                for (var i = 0; i < Object.keys(dhtlist).length; i++) {
+                    var arr = { temperature: Number(dhtlist[i][1]).toPrecision(4), ts: Date.parse(dhtlist[i][3]) };
+                    graphdata.push(arr);
+                }
+			}
+			x.domain(d3.extent(graphdata, function (d) { return d.ts; }));
+			y.domain(d3.extent(graphdata, function (d) { return d.temperature; }));
+
+			svg.append("path")
+				.datum(graphdata)
+				.attr("class", "area")
+				.attr("d", area);
+
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis)
+
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+			  .append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 6)
+				.attr("dy", ".71em")
+				.style("text-anchor", "end")
+				.text("Temperature (C)");
+		}
+	</script>
+    <style>
+        html,body,#tgraphContent{
+            height:100%;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .area {
+            fill: #3c5c6b;
+        }
+    </style>
+</head>
+<body>
+    <div id="tgraphContent">
+        <div id="tgraph"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script>
+		window.onload = function()
+			{
+				var tcolor,hcolor;
+				var dht = JSON.parse(android.getData());
+				var temp = 0;
+                var hum = 0;
+				if(typeof dht[0] != 'undefined') {
+				    temp = dht[0];
+				    hum = dht[1];
+				    document.getElementById("tempSpan").innerHTML = temp + "°C";
+                    document.getElementById("humSpan").innerHTML = hum + "%";
+				}
+				else {
+				    document.getElementById("tempSpan").innerHTML = "loading";
+                    document.getElementById("humSpan").innerHTML = "loading";
+				}
+
+                if(temp <= 19) { tcolor="cornflowerblue" }
+                else if ( temp > 19 && temp <= 21) { tcolor="gold" }
+                else { tcolor="crimson" }
+
+                if(hum <= 33) { hcolor="cornflowerblue" }
+                else if ( hum > 33 && hum <= 66) { hcolor="gold" }
+                else { hcolor="crimson" }
+
+				document.getElementById("tempFace").style.backgroundColor = tcolor;
+				document.getElementById("humFace").style.backgroundColor = hcolor;
+			}
+	</script>
+</head>
+<body>
+    <ul class="creatures" id="creatures">
+        <li>
+            <div class="temperatureTitle">
+                <span>Temperature</span>
+            </div>
+            <figure id="tempFace" class="hyper" style="background-color:seagreen">
+                <div class="eye"></div><div class="eye"></div>
+                <div class="mouth">
+                    <div class="temperature">
+                        <span id="tempSpan">0.0°C</span>
+                    </div>
+                </div>
+            </figure></div>
+            <div class="shadow"></div>
+        </li>
+        <li>
+            <div class="humidityTitle">
+                <span>Humidity</span>
+            </div>
+            <div class="click-anim">
+                <figure id="humFace" class="" style="background-color:@csscreatures">
+                    <div class="eye"></div><div class="eye"></div>
+                    <div class="mouth ">
+                        <div class="humidity">
+                            <span id="humSpan">0.0%</span>
+                        </div>
+                    </div>
+                </figure>
+            </div>
+            <div class="shadow"></div>
+        </li>
+    </ul>
+</body>
+</html>

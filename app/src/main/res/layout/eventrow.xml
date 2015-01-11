@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="2dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:id="@+id/eventIcon"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="6dp"
+            android:text="Title"
+            android:id="@+id/eventTitle"
+            android:singleLine="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/eventDescr"
+            android:layout_alignStart="@+id/eventDescr"
+            android:layout_toRightOf="@+id/eventIcon"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="6dp"
+            android:text="Hour"
+            android:id="@+id/eventDescr"
+            android:singleLine="true"
+            android:layout_below="@+id/eventTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/eventIcon"
+            android:textSize="12dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

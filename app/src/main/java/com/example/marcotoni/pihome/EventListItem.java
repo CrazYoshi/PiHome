@@ -5,6 +5,7 @@ public class EventListItem {
     private String name;
     private String description;
     private String type;
+    private boolean isNotified;
     private boolean isChecked = false;
 
     public boolean isChecked() {
@@ -12,6 +13,14 @@ public class EventListItem {
     }
     public void setIsChecked(boolean isChecked) {
         this.isChecked = isChecked;
+    }
+
+    public boolean isNotified() {
+        return isNotified;
+    }
+    public void setIsNotified(int isNotified) {
+        if(isNotified == 1) this.isNotified = true;
+        else this.isNotified = false;
     }
 
     public int getID(){ return id; }

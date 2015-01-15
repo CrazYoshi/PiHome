@@ -55,11 +55,6 @@ public class eventlist extends Fragment {
                              Bundle savedInstanceState) {
         View eventView = inflater.inflate(R.layout.fragment_eventlist, null);
         EventListView = (ListView) eventView.findViewById(R.id.EventListView);
-        /*EventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            }
-        });*/
 
         eventAdapter = new CustomAdapter(eventView.getContext(), new ActionBarCallBack());
         EventListView.setAdapter(eventAdapter);
@@ -68,30 +63,16 @@ public class eventlist extends Fragment {
         return eventView;   // Inflate the layout for this fragment
     }
 
-    @Override
+    /*@Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_delete:
                 deleteEventList();
                 return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
-
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.eventlist_actions, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.action_delete:
-                deleteEventList();
+            case R.id.action_accept:
                 return true;
             default:
-                return  super.onOptionsItemSelected(item);
+                return super.onContextItemSelected(item);
         }
     }*/
 
@@ -133,6 +114,7 @@ public class eventlist extends Fragment {
                 item.setTitle(jsonArray.getString(2));
                 item.setType(jsonArray.getString(1));
                 item.setDescription(jsonDate.toString("HH:mm"));
+                item.setIsNotified(jsonArray.getInt(4));
                 eventAdapter.addItem(item);
             }
             eventAdapter.notifyDataSetChanged();
@@ -147,6 +129,14 @@ public class eventlist extends Fragment {
             if(eventAdapter.getItem(i).isChecked()) array.put(eventAdapter.getItem(i).getID());
         }
         new EventDataDelete().execute(array);
+    }
+
+    private void updateIsNotifiedEventList(){
+        JSONArray array = new JSONArray();
+        for(int i=0;i<eventAdapter.getCount();i++){
+            if(eventAdapter.getItem(i).isChecked()) array.put(eventAdapter.getItem(i).getID());
+        }
+        new EventDataUpdate().execute(array);
     }
 
     /**
@@ -200,6 +190,24 @@ public class eventlist extends Fragment {
         }
     }
 
+    private class EventDataUpdate extends AsyncTask{
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            String address = "http://localhost:8080";
+            if(isAdded()) {
+                address = getString(R.string.JSONRPCserver);
+            }
+            RPiClient clt = new RPiClient(address);
+            return clt.sendRequest("updateEventNotification",objects);
+        }
+
+        @Override
+        protected void onPostExecute(Object result){
+            super.onPostExecute(result);
+            if(result != null){ fillEventList((JSONArray) result); }
+        }
+    }
+
     public class ActionBarCallBack implements ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -217,7 +225,11 @@ public class eventlist extends Fragment {
             switch (item.getItemId()){
                 case R.id.action_delete:
                     deleteEventList();
-                    eventAdapter.PostDeleteAction();
+                    eventAdapter.PostAction();
+                    return true;
+                case R.id.action_accept:
+                    updateIsNotifiedEventList();
+                    eventAdapter.PostAction();
                     return true;
                 default:
                     return false;

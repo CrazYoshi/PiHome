@@ -58,7 +58,7 @@ public class CustomAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void PostDeleteAction()
+    public void PostAction()
     {
         isActionModeShowing = false;
         mMode.finish();
@@ -99,6 +99,7 @@ public class CustomAdapter extends BaseAdapter {
                 holder.textViewTitle = (TextView) rowView.findViewById(R.id.eventTitle);
                 holder.textViewDescription = (TextView) rowView.findViewById(R.id.eventDescr);
                 holder.ImageViewIcon = (ImageView) rowView.findViewById(R.id.eventIcon);
+                holder.ImageViewNotifiedIcon = (ImageView) rowView.findViewById(R.id.eventNotificationIcon);
                 holder.ImageViewIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
@@ -150,9 +151,10 @@ public class CustomAdapter extends BaseAdapter {
         // fill data
         ViewHolder holder = (ViewHolder) rowView.getTag();
         if(getItemViewType(position) == TYPE_ITEM){
-                holder.textViewDescription.setText(mData.get(position).getDescription());
-                holder.ImageViewIcon.setTag("" + position);
-                SetEventIcon(holder, mData.get(position));
+            holder.textViewDescription.setText(mData.get(position).getDescription());
+            holder.ImageViewIcon.setTag("" + position);
+            SetEventIcon(holder, mData.get(position));
+            SetNotificationIcon(holder,mData.get(position));
         }
         holder.textViewTitle.setText(mData.get(position).getTitle());
         return rowView;
@@ -162,6 +164,7 @@ public class CustomAdapter extends BaseAdapter {
         public TextView textViewTitle;
         public TextView textViewDescription;
         public ImageView ImageViewIcon;
+        public ImageView ImageViewNotifiedIcon;
     }
 
     private void setCount(final EventListItem eventListItem) {// Set selected count
@@ -194,5 +197,10 @@ public class CustomAdapter extends BaseAdapter {
             if (item.getType().equals("pir")){ holder.ImageViewIcon.setImageResource(R.drawable.eye); }
             else holder.ImageViewIcon.setImageResource(R.drawable.door);
         }
+    }
+
+    private void SetNotificationIcon(ViewHolder holder, EventListItem item){
+        if(!item.isNotified()) holder.ImageViewNotifiedIcon.setImageResource(R.drawable.is_notified);
+        else holder.ImageViewNotifiedIcon.setImageDrawable(null);
     }
 }

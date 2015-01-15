@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-v4:20.0.0'
     compile files('libs/android-json-rpc-0.3.4.jar')
     compile files('libs/joda-time-2.5.jar')
+    compile 'com.android.support:support-v4:20.0.0'
 }

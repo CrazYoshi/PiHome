@@ -8,6 +8,7 @@
     <string name="title_section4">Event List</string>
     <string name="JSONRPCserver">http://grisuhome.no-ip.biz:8080</string>
     <string name="action_settings">Settings</string>
+    <string name="action_accept">Mark as read</string>
     <string name="action_delete">Delete</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

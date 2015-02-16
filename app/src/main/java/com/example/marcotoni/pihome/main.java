@@ -9,8 +9,11 @@ import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +31,7 @@ public class main extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private static final int RESULT_SETTINGS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,19 +121,21 @@ public class main extends Activity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        /*int id = item.getItemId();
+        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent i = new Intent(this,SettingsActivity.class);
             startActivityForResult(i,RESULT_SETTINGS);
             return true;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void CheckForEvents() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         // Construct an intent that will execute the AlarmReceiver
         Intent intent = new Intent(getApplicationContext(), EventAlarmReceiver.class);
         // Create a PendingIntent to be triggered when the alarm goes off
@@ -137,9 +143,13 @@ public class main extends Activity
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Setup periodic alarm every 5 seconds
         long firstMillis = System.currentTimeMillis(); // first run of alarm is immediate
-        int intervalMillis = 30000; // 10 seconds
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, intervalMillis, pIntent);
+        int intervalMillis = Integer.parseInt(sharedPreferences.getString("sync_frequency", "-1"));
+
+        if(intervalMillis != -1) {
+            intervalMillis = intervalMillis * 1000 * 60; // Convert to milliseconds
+            AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, intervalMillis, pIntent);
+        }
     }
 
 }

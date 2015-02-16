@@ -6,10 +6,13 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.*;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import org.json.JSONArray;
@@ -28,16 +31,18 @@ public class EventPullService extends IntentService {
     }
 
     private void NotifyEvent(JSONArray array){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         if (array.length()>0) {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setContentTitle("New event found")
                     .setContentText("Someone accessed in your house")
                     .setSmallIcon(R.drawable.ic_stat_action_visibility)
                     .setLargeIcon(((BitmapDrawable) getResources().getDrawable(R.drawable.ic_launcher)).getBitmap())
-                    .setNumber(array.length());
-                    //.setSound();
-                    //.setVibrate()
+                    .setNumber(array.length())
+                    .setSound(Uri.parse(sharedPreferences.getString("notifications_new_message_ringtone","content://settings/system/notification_sound")));
                     //.setLight()
+            if(sharedPreferences.getBoolean("notifications_new_message_vibrate",true)) mBuilder.setVibrate(new long[] {1000,1000});
             Intent resultIntent = new Intent(this, main.class);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
             stackBuilder.addParentStack(main.class);
@@ -53,8 +58,7 @@ public class EventPullService extends IntentService {
     private class CheckForNews extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = getString(R.string.JSONRPCserver);
-            RPiClient clt = new RPiClient(address);
+            RPiClient clt = new RPiClient(getApplicationContext());
             return clt.sendRequest("selectEventNotification");
         }
 

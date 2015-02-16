@@ -113,12 +113,11 @@ public class dashboard extends Fragment {
     private class dhtDataRead extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = "http://localhost:8080";
             if(isAdded()) {
-                address = getString(R.string.JSONRPCserver);
+                RPiClient clt = new RPiClient(getActivity().getApplicationContext());
+                return clt.sendRequest("dhtRead");
             }
-            RPiClient clt = new RPiClient(address);
-            return clt.sendRequest("dhtRead");
+            else return null;
         }
 
         @Override

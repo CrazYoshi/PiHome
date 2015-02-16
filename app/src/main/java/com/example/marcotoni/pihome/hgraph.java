@@ -111,12 +111,11 @@ public class hgraph extends Fragment {
     private class graphDataRead extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = "http://localhost:8080";
             if(isAdded()) {
-                address = getString(R.string.JSONRPCserver);
+                RPiClient clt = new RPiClient(getActivity().getApplicationContext());
+                return clt.sendRequest("selectDHTinfo");
             }
-            RPiClient clt = new RPiClient(address);
-            return clt.sendRequest("selectDHTinfo");
+            else return null;
         }
 
         @Override

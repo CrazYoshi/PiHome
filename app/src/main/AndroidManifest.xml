@@ -29,6 +29,10 @@
             android:name=".EventAlarmReceiver"
             android:process=":remote" />
 
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>

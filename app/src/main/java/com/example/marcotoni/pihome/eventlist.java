@@ -157,12 +157,11 @@ public class eventlist extends Fragment {
     private class EventDataRead extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = "http://localhost:8080";
             if(isAdded()) {
-                address = getString(R.string.JSONRPCserver);
+                RPiClient clt = new RPiClient(getActivity().getApplicationContext());
+                return clt.sendRequest("selectEvents");
             }
-            RPiClient clt = new RPiClient(address);
-            return clt.sendRequest("selectEvents");
+            else return null;
         }
 
         @Override
@@ -175,12 +174,11 @@ public class eventlist extends Fragment {
     private class EventDataDelete extends AsyncTask{
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = "http://localhost:8080";
             if(isAdded()) {
-                address = getString(R.string.JSONRPCserver);
+                RPiClient clt = new RPiClient(getActivity().getApplicationContext());
+                return clt.sendRequest("deleteEvent",objects);
             }
-            RPiClient clt = new RPiClient(address);
-            return clt.sendRequest("deleteEvent",objects);
+            else return null;
         }
 
         @Override
@@ -193,12 +191,11 @@ public class eventlist extends Fragment {
     private class EventDataUpdate extends AsyncTask{
         @Override
         protected Object doInBackground(Object[] objects) {
-            String address = "http://localhost:8080";
             if(isAdded()) {
-                address = getString(R.string.JSONRPCserver);
+                RPiClient clt = new RPiClient(getActivity().getApplicationContext());
+                return clt.sendRequest("updateEventNotification",objects);
             }
-            RPiClient clt = new RPiClient(address);
-            return clt.sendRequest("updateEventNotification",objects);
+            else return null;
         }
 
         @Override
